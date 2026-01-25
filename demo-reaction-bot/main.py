@@ -14,14 +14,21 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
 
 async def handle_reaction(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    reaction_update = update.message_reaction
+    ru = update.message_reaction
 
-    chat = reaction_update.chat
-    message_id = reaction_update.message_id
-    user = reaction_update.user
-    new_reaction = reaction_update.new_reaction
+    chat_id = ru.chat.id
+    message_id = ru.message_id
+    user = ru.user
 
-    print(chat, user, message_id, new_reaction)
+    for r in ru.new_reaction: # 这里其实会获得一条消息上所有的reaction。
+        if isinstance(r, ReactionTypeEmoji):
+            text = f"{user.first_name} 点了一个 {r.emoji}"
+
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=text,
+                reply_to_message_id=message_id
+            )
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token('8075682427:AAGlIlHOGit78OIUsgR_IHw9ySLuQN9zHF0').build()
@@ -31,4 +38,4 @@ if __name__ == '__main__':
     application.add_handler(MessageReactionHandler(handle_reaction))
     
     # 重要提示：添加 allowed_updates 参数。
-    application.run_polling(allowed_updates=['message_reaction'])
+    application.run_polling(allowed_updates=["message", 'message_reaction'])

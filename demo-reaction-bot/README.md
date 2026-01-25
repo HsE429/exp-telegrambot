@@ -15,3 +15,6 @@ reaction_update.user           # 点反应的人
 reaction_update.new_reaction   # 新增的反应列表
 reaction_update.old_reaction   # 原来的反应列表
 ```
+
+注意通过BotFather设置机器人为非`Privacy Mode`模式。
+然后必须在run_polling中显式指明读取`message_reaction`消息。
